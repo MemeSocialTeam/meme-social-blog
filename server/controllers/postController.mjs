@@ -7,27 +7,74 @@ import MemeTag from "../models/memeTag.mjs";
 import Like from "../models/like.mjs";
 import Comment from "../models/comment.mjs";
 import { sendResponse } from "../utils/helpers/sendResponse.mjs";
+import { Op } from "sequelize";
 
 // --- get all posts ---
 export const getAllPosts = catchAsync(async (req, res, next) => {
-  const posts = await Meme.findAll({
-    include: [
-      {
-        model: Tag,
-        as: "tags",
-        through: { attributes: [] },
-      },
-      {
-        model: User,
-        as: "user",
-        attributes: ["id", "username"],
-      },
-      { model: Like, as: "likes", attributes: ["id"] },
-      { model: Comment, as: "comments", attributes: ["id"]},
-    ],
-    order: [["createdAt", "DESC"]],
-  });
-  const postsWithCounts = posts.map(post => {
+  const { search, tag } = req.query;
+  const where = {}
+
+  if(search) {
+    where.title = {[Op.like]: `%${search}%`}
+  }
+
+  let posts;
+
+  if (tag) {
+    const taggedPosts = await Meme.findAll({
+      include: [
+        {
+          model: Tag,
+          as: "tags",
+          where: { tag_name: { [Op.like]: `%${tag}%` } },
+          attributes: [],
+          through: { attributes: [] },
+          required: true,
+        },
+      ],
+      attributes: ["id"],
+    });
+    const postIds = taggedPosts.map((p) => p.id);
+    posts = await Meme.findAll({
+      where: { ...where, id: postIds },
+      include: [
+        {
+          model: Tag,
+          as: "tags",
+          through: { attributes: [] },
+        },
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "username"],
+        },
+        { model: Like, as: "likes", attributes: ["id"] },
+        { model: Comment, as: "comments", attributes: ["id"] },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+  } else {
+    posts = await Meme.findAll({
+      where,
+      include: [
+        {
+          model: Tag,
+          as: "tags",
+          through: { attributes: [] },
+        },
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "username"],
+        },
+        { model: Like, as: "likes", attributes: ["id"] },
+        { model: Comment, as: "comments", attributes: ["id"] },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+  }
+
+  const postsWithCounts = posts.map((post) => {
     const p = post.toJSON();
     return {
       ...p,
