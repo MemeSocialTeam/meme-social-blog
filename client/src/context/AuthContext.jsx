@@ -3,7 +3,8 @@ import {
   login as apiLogin,
   register as apiRegister,
   logout as apiLogout,
-  getMe
+  getMe,
+  apiChangePassword
 } from "../api/authApi";
 
 const AuthContext = createContext();
@@ -65,6 +66,15 @@ if (res?.data?.user) {
     }
   }
 
+  // --- change password ---
+ async function changePassword(currentPsw, newPassword) {
+  try{
+    return await apiChangePassword(currentPsw, newPassword)
+  }catch (err) {
+      console.error("Logout error", err);
+    }
+}
+
   const value = {
     user,
     login,
@@ -72,6 +82,7 @@ if (res?.data?.user) {
     logout,
     isAuthenticated: !!user,
     loading,
+    changePassword
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

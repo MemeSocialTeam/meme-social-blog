@@ -5,6 +5,7 @@ import Profile from "../pages/Profile";
 import Categories from "../pages/Categories";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import ChangePassword from "../pages/ChangePassword";
 
 export const router = createBrowserRouter([
   {
@@ -12,6 +13,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home /> },
       { path: "/profile", element: <Profile /> },
+      { path: "/change-password", element: <ChangePassword /> },
       { path: "/categories", element: <Categories /> },
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
