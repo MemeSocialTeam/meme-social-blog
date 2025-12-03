@@ -56,7 +56,7 @@ export const updateUser = catchAsync(async (req, res, next) => {
       return next(new AppError("Current password is required", 400));
     const isMatch = compareHashedPassword(currentPsw, user.password);
     if (!isMatch) return next(new AppError("Current password incorrect", 400));
-    if (password) user.password = password;
+    user.password = password;
   }
 
   if (username) user.username = username;
@@ -64,7 +64,14 @@ export const updateUser = catchAsync(async (req, res, next) => {
 
   const updated = await user.save();
   if (!updated) return next(new AppError("User not found", 404));
+
+  req.session.regenerate((err) => {
+  if (err) return next(new AppError("Failed to refresh session", 500))
+
+  req.session.userId = user.id;
+
   sendResponse(res, 200, updated)
+});
 });
 
 // --- delete user profile ---
