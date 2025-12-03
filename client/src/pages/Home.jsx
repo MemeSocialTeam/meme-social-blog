@@ -5,6 +5,7 @@ import { createPost } from "../api/postApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import "../styles/home.css";
+import { useLocation } from "react-router-dom";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
@@ -18,14 +19,26 @@ export default function Home() {
     image_url: "",
     tags: "",
   });
+  const location = useLocation();
+const params = new URLSearchParams(location.search);
+const searchQuery = params.get("query");
+const tag = params.get("tag");
 
   useEffect(() => {
     async function fetchPosts() {
       try {
-        const res = await fetch("http://localhost:3000/api/post");
-        const data = await res.json();
-        console.log(data);
+        let url = "http://localhost:3000/api/post";
 
+      if (searchQuery) {
+        url += `?search=${searchQuery}`;
+      }
+      if (tag) {
+        url += `?tag=${tag}`;
+      }
+
+        const res = await fetch(url);
+        const data = await res.json();
+        // console.log(data);
         setPosts(data.data);
       } catch (err) {
         console.error(err);
@@ -33,7 +46,7 @@ export default function Home() {
     }
 
     fetchPosts();
-  }, []);
+  }, [searchQuery, tag]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

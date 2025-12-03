@@ -9,12 +9,14 @@ import {
 import Button from "../components/Button";
 import { useAuth } from "../context/AuthContext";
 import { toggleLike } from "../api/postApi";
+import { useNavigate } from "react-router-dom";
 
 const DEFAULT_POST_IMAGE = "https://i.imgflip.com/1bhk.jpg";
 
 export default function PostCard({ post }) {
   const [likesCount, setLikesCount] = useState(post.likesCount);
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const handleToggleLike = async () => {
     if (!user) return;
@@ -68,7 +70,7 @@ export default function PostCard({ post }) {
       </div>
       <div className="post-tags">
         {post.tags?.map((tag) => (
-          <span key={tag.id}>#{tag.tag_name} </span>
+          <span key={tag.id} onClick={() => navigate(`/?tag=${tag.tag_name}`)}>#{tag.tag_name}</span>
         ))}
       </div>
     </div>
