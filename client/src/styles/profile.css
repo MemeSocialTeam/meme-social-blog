@@ -44,10 +44,14 @@
   padding: 20px;
   background: #f8f9fa;
   border-radius: 8px;
+  justify-content: center;
 }
 
 .profile-stat-item {
   text-align: center;
+  min-width: 80px;
+  flex: 1;
+  max-width: 120px;
 }
 
 .profile-stat-value {
@@ -55,12 +59,16 @@
   font-weight: bold;
   color: #dc4d34;
   display: block;
+  line-height: 1.2;
+  min-height: 28px;
 }
 
 .profile-stat-label {
   font-size: 14px;
   color: #666;
   margin-top: 4px;
+  display: block;
+  line-height: 1.4;
 }
 
 .profile-actions {

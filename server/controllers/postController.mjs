@@ -82,7 +82,18 @@ export const getAllPosts = catchAsync(async (req, res, next) => {
       commentsCount: p.comments.length,
     };
   });
-  sendResponse(res, 200, postsWithCounts);
+
+  const totalPages = totalPosts % limit === 0 
+    ? totalPosts / limit 
+    : Math.floor(totalPosts / limit) + 1;
+
+  sendResponse(res, 200, {
+    posts: postsWithCounts,
+    pagination: {
+      currentPage: page,
+      totalPages: totalPages,
+    },
+  });
 });
 
 // --- create a post ---

@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { createPost } from "../api/postApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import Pagination from "../components/Pagination";
 import "../styles/home.css";
 import { useLocation } from "react-router-dom";
 
@@ -11,6 +12,8 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const [isCreating, setIsCreating] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState(null);
   const { user } = useAuth();
   const [formData, setFormData] = useState({
     title: "",
@@ -42,6 +45,7 @@ const tag = params.get("tag");
         setPosts(data.data);
       } catch (err) {
         console.error(err);
+        setPosts([]);
       }
     }
 
@@ -93,9 +97,15 @@ const tag = params.get("tag");
 
       setIsExpanded(false);
 
-      const res = await fetch("http://localhost:3000/api/post");
+      const res = await fetch(`http://localhost:3000/api/post?page=${currentPage}&limit=10`);
       const data = await res.json();
-      setPosts(data.data);
+
+      if (data.data && data.data.posts) {
+        setPosts(data.data.posts);
+        setPagination(data.data.pagination);
+      } else {
+        setPosts(data.data);
+      }
     } catch (err) {
       alert(err.message || "Failed to create post");
     } finally {
@@ -171,7 +181,7 @@ const tag = params.get("tag");
                     id="image_url"
                     name="image_url"
                     type="url"
-                    placeholder="Enter image URL (optional)"
+                    placeholder="Enter image URL"
                     value={formData.image_url}
                     onChange={handleInputChange}
                   />
@@ -187,9 +197,6 @@ const tag = params.get("tag");
                     value={formData.tags}
                     onChange={handleInputChange}
                   />
-                  <p className="create-post-tags-hint">
-                    Separate tags with commas
-                  </p>
                 </div>
                 <button type="submit" disabled={isCreating}>
                   {isCreating ? "Creating..." : "Create Post"}
@@ -202,7 +209,18 @@ const tag = params.get("tag");
 
       <div className="posts-container">
         {Array.isArray(posts) && posts.length > 0 ? (
-          posts.map((post) => <PostCard key={post.id} post={post} />)
+          <>
+            {posts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+            {pagination && (
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
+                onPageChange={setCurrentPage}
+              />
+            )}
+          </>
         ) : (
           <p style={{ textAlign: "center", color: "#666", padding: "40px" }}>
             No posts yet. Be the first to create one!
