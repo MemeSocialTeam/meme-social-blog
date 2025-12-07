@@ -20,6 +20,7 @@ app.use(
   cors({
     origin: FRONTEND_URL, //"http://localhost:5173", //true
     credentials: true,
+    exposedHeaders: ["Set-Cookie"],
   })
 );
 
@@ -48,7 +49,7 @@ app.use(
     saveUninitialized: false,
     resave: false,
     cookie: {
-      httpOnly: true,
+      httpOnly: false,
       maxAge: 60000 * 60, // one hour
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       secure: process.env.NODE_ENV === "production",
