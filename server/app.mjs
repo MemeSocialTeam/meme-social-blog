@@ -53,8 +53,8 @@ app.use(
       httpOnly: false,
       maxAge: 60000 * 60, // one hour
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      // secure: process.env.NODE_ENV === "production",
-      secure: "auto",
+      secure: process.env.NODE_ENV === "production",
+      // secure: "auto",
     },
     name: "connect.sid",
     store: store,
