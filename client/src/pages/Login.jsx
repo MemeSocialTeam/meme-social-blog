@@ -4,10 +4,16 @@ import { useAuth } from "../context/AuthContext";
 import Alert from "../components/Alert";
 import "../styles/login.css";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [alert, setAlert] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -46,16 +52,23 @@ export default function Login() {
               required
             />
           </div>
-          <div>
+          <div className="password-wrapper">
             <label htmlFor="password">Password</label>
             <input
               id="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+            <div
+              type="button"
+              className="toggle-password"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+            </div>
           </div>
 
           <button type="submit">Sign In</button>

@@ -78,3 +78,18 @@
 .login-box a:hover {
   text-decoration: underline;
 }
+
+
+.password-wrapper {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 0;
+  top: 53%;
+  transform: translateY(-53%);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
