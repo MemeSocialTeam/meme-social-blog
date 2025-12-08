@@ -58,11 +58,11 @@
 }
 
 .alert-fixed {
-  position: fixed;
+  position: absolute;
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1022 !important;;
+  z-index: 1022;
   max-width: 500px;
   width: 90%;
   margin: 0;
