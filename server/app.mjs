@@ -29,9 +29,10 @@ app.use(express.urlencoded({ extended: true }));
 
 const SequelizeStoreInstance = SequelizeStore(session.Store);
 
-// const store = new SequelizeStoreInstance({
-//   db: sequelize,
-// });
+const store = new SequelizeStoreInstance({
+  db: sequelize,
+});
+
 // store.get = function (sid, callback) {
 //   const unsigned = sid.startsWith("s:")
 //     ? signature.unsign(sid.slice(2), process.env.COOKIE_SECRET)
@@ -50,14 +51,14 @@ app.use(
     saveUninitialized: false,
     resave: false,
     cookie: {
-      httpOnly: false,
+      httpOnly: true,
       maxAge: 60000 * 60, // one hour
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       secure: process.env.NODE_ENV === "production",
       // secure: "auto",
     },
     name: "connect.sid",
-    // store: store,
+    store: store,
   })
 );
 
