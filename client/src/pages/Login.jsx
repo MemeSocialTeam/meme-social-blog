@@ -63,7 +63,6 @@ export default function Login() {
               required
             />
             <div
-              type="button"
               className="toggle-password"
               onClick={() => setShowPassword((prev) => !prev)}
             >

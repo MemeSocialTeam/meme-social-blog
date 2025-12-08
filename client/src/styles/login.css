@@ -84,7 +84,7 @@
   position: relative;
 }
 
-.toggle-password {
+.toggle-password, .toggle-confirmed-password {
   position: absolute;
   right: 0;
   top: 53%;

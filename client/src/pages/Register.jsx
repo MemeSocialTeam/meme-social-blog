@@ -4,12 +4,17 @@ import { useAuth } from "../context/AuthContext";
 import Alert from "../components/Alert";
 import "../styles/login.css";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+
 export default function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [alert, setAlert] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
   const { register } = useAuth();
@@ -63,26 +68,36 @@ export default function Register() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-
-          <label htmlFor="confirmPassword">Confirm Password</label>
-          <input
-            id="confirmPassword"
-            type="password"
-            placeholder="Confirm your password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
+          <div className="password-wrapper">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <div className="toggle-password" onClick={() => setShowPassword((prev) => !prev)}>
+              <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+            </div>
+          </div>
+          <div className="password-wrapper">
+            <label htmlFor="confirmPassword">Confirm Password</label>
+            <input
+              id="confirmPassword"
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm your password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+            <div className="toggle-confirmed-password" onClick={() => setShowConfirmPassword((prev) => !prev)}>
+              <FontAwesomeIcon
+                icon={showConfirmPassword ? faEyeSlash : faEye}
+              />
+            </div>
+          </div>
 
           <button type="submit">Sign Up</button>
         </form>
