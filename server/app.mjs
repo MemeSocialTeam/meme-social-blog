@@ -27,6 +27,14 @@ app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.urlencoded({ extended: true }));
 
+app.use((req, res, next) => {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+  res.setHeader("Surrogate-Control", "no-store");
+  next();
+});
+
 const SequelizeStoreInstance = SequelizeStore(session.Store);
 
 const store = new SequelizeStoreInstance({
@@ -42,6 +50,8 @@ const store = new SequelizeStoreInstance({
 // };
 
 await store.sync();
+
+app.disable("etag");
 
 app.set("trust proxy", 1);
 
@@ -62,8 +72,11 @@ app.use(
   })
 );
 
+
 app.use(passport.initialize());
 app.use(passport.session());
+
+
 
 app.use("/api", routes);
 

@@ -26,6 +26,7 @@ router
   if (!req.user) {
     return res.status(401).json({ message: 'Not authenticated' });
   }
+  res.setHeader("Cache-Control", "no-store");
   res.json({ user: req.user });
 } )
   .patch(isAuth, checkSchema(userPatch), validate, userController.updateUser) // ok
