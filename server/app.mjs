@@ -42,6 +42,8 @@ store.get = function (sid, callback) {
 
 await store.sync();
 
+app.set("trust proxy", 1);
+
 app.use(
   session({
     secret: process.env.COOKIE_SECRET,
