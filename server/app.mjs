@@ -29,16 +29,16 @@ app.use(express.urlencoded({ extended: true }));
 
 const SequelizeStoreInstance = SequelizeStore(session.Store);
 
-const store = new SequelizeStoreInstance({
-  db: sequelize,
-});
-store.get = function (sid, callback) {
-  const unsigned = sid.startsWith("s:")
-    ? signature.unsign(sid.slice(2), process.env.COOKIE_SECRET)
-    : sid;
+// const store = new SequelizeStoreInstance({
+//   db: sequelize,
+// });
+// store.get = function (sid, callback) {
+//   const unsigned = sid.startsWith("s:")
+//     ? signature.unsign(sid.slice(2), process.env.COOKIE_SECRET)
+//     : sid;
 
-  SequelizeStoreInstance.prototype.get.call(this, unsigned, callback);
-};
+//   SequelizeStoreInstance.prototype.get.call(this, unsigned, callback);
+// };
 
 await store.sync();
 
@@ -57,7 +57,7 @@ app.use(
       // secure: "auto",
     },
     name: "connect.sid",
-    store: store,
+    // store: store,
   })
 );
 
