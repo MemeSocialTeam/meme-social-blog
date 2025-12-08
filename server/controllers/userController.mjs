@@ -77,5 +77,20 @@ export const deleteUser = catchAsync(async (req, res, next) => {
   await Meme.destroy({ where: { user_id: id } });
   const deleted = await User.destroy({ where: { id } });
   if (!deleted) return next(new AppError("User not found", 404));
+
+  req.logout(err => {
+    if (err) return next(err);
+  });
+  
+  req.session.destroy(err => {
+    if (err) console.error("Session destroy error:", err);
+  });
+
+  res.clearCookie("connect.sid", {
+    httpOnly: true,
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: process.env.NODE_ENV === "production",
+  });
+
   sendResponse(res, 200, { msg: "Account deleted successfully" })
 });
