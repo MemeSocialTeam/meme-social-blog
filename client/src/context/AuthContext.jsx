@@ -3,7 +3,8 @@ import {
   login as apiLogin,
   register as apiRegister,
   logout as apiLogout,
-  getMe
+  getMe,
+  changePassword as apiChangePassword,
 } from "../api/authApi";
 
 const AuthContext = createContext();
@@ -15,7 +16,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     async function init() {
       try {
-        const res = await getMe()
+        const res = await getMe();
         if (res?.data?.user) {
           setUser(res.data.user);
         } else if (res?.data) {
@@ -36,7 +37,7 @@ export function AuthProvider({ children }) {
   // --- login ---
   async function login(email, password) {
     const res = await apiLogin(email, password);
-if (res?.data?.user) {
+    if (res?.data?.user) {
       setUser(res.data.user);
       return res.data.user;
     }
@@ -47,7 +48,7 @@ if (res?.data?.user) {
   async function register(username, email, password) {
     await apiRegister(username, email, password);
     const res = await apiLogin(email, password);
-if (res?.data?.user) {
+    if (res?.data?.user) {
       setUser(res.data.user);
       return res.data.user;
     }
@@ -66,13 +67,13 @@ if (res?.data?.user) {
   }
 
   const changePassword = async (currentPassword, newPassword) => {
-  const res = await fetch("/api/user/change-password", {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ currentPassword, newPassword }),
-  });
-  if (!res.ok) throw new Error("Failed to change password");
-};
+    try {
+      await apiChangePassword(currentPassword, newPassword);
+    } catch (err) {
+      console.error("Failed to change password", err);
+      throw err
+    }
+  };
 
   const value = {
     user,
@@ -81,7 +82,7 @@ if (res?.data?.user) {
     logout,
     isAuthenticated: !!user,
     loading,
-    changePassword
+    changePassword,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
