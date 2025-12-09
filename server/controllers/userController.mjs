@@ -55,10 +55,10 @@ export const updateUser = catchAsync(async (req, res, next) => {
     if (password) {
       if (!currentPsw)
         return next(new AppError("Current password is required", 400));
-      const isMatch = compareHashedPassword(currentPsw, user.password);
+      const isMatch = await compareHashedPassword(currentPsw, user.password);
       if (!isMatch)
         return next(new AppError("Current password incorrect", 400));
-      if (password) user.password = password;
+      user.password = password;
     }
 
     if (username) user.username = username;
