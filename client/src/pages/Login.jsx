@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import Alert from "../components/Alert";
+// import Alert from "../components/Alert";
 import "../styles/login.css";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
