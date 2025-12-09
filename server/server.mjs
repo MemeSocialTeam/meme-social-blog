@@ -14,9 +14,9 @@ import "./models/index.mjs";
 const PORT = process.env.PORT || 3000;
 const HOST = "0.0.0.0";
 
-const rebuild = process.argv[2] === "--rebuild";
+// const rebuild = process.argv[2] === "--rebuild";
 
-sequelize.sync({ force: rebuild }).then(() => {
+sequelize.sync().then(() => {
   app.listen(PORT, () => {
     console.log("Node env checking", process.env.NODE_ENV);
     console.log(`Running on PORT ${PORT}`);
