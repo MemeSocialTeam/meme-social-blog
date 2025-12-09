@@ -30,7 +30,7 @@ passport.use(
         const user = await User.findOne({where: {email}})
         console.log('locStr', user);
         if (!user) return done(null, false, { message: "User not found" });
-        const isMatch = compareHashedPassword(password, user.password);
+        const isMatch = await compareHashedPassword(password, user.password);
         if (!isMatch)
           return done(null, false, { message: "Invalid credentials" });
         done(null, user);
