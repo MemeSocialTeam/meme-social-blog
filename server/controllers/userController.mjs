@@ -11,7 +11,7 @@ export const getAllUsers = catchAsync(async (req, res, next) => {
   const users = await User.findAll();
   console.log(users);
 
-  sendResponse(res, 200, users)
+  sendResponse(res, 200, users);
 });
 
 // --- get single user by id ---
@@ -27,7 +27,7 @@ export const getOneUser = catchAsync(async (req, res, next) => {
     include: [
       { model: Follow, as: "followers", attributes: [] },
       { model: Follow, as: "following", attributes: [] },
-      { model: Meme, as: "memes", attributes: [] }
+      { model: Meme, as: "memes", attributes: [] },
     ],
   });
   if (!user) return next(new AppError("User not found", 404));
@@ -36,35 +36,41 @@ export const getOneUser = catchAsync(async (req, res, next) => {
     followersCount: await user.countFollowers(),
     followingCount: await user.countFollowing(),
     memesCount: await user.countMemes(),
-  }
-  sendResponse(res, 200, userData)
+  };
+  sendResponse(res, 200, userData);
 });
 
 // --- update user by id ---
 
 export const updateUser = catchAsync(async (req, res, next) => {
-  const {
-    user: { id },
-    body: { username, email, password, currentPsw },
-  } = req;
+  try {
+    const {
+      user: { id },
+      body: { username, email, password, currentPsw },
+    } = req;
 
-  const user = await User.findByPk(id);
-  if (!user) return next(new AppError("User not found", 404));
+    const user = await User.findByPk(id);
+    if (!user) return next(new AppError("User not found", 404));
 
-  if (password) {
-    if (!currentPsw)
-      return next(new AppError("Current password is required", 400));
-    const isMatch = compareHashedPassword(currentPsw, user.password);
-    if (!isMatch) return next(new AppError("Current password incorrect", 400));
-    if (password) user.password = password;
+    if (password) {
+      if (!currentPsw)
+        return next(new AppError("Current password is required", 400));
+      const isMatch = compareHashedPassword(currentPsw, user.password);
+      if (!isMatch)
+        return next(new AppError("Current password incorrect", 400));
+      if (password) user.password = password;
+    }
+
+    if (username) user.username = username;
+    if (email) user.email = email;
+
+    const updated = await user.save();
+    if (!updated) return next(new AppError("User not found", 404));
+    sendResponse(res, 200, updated);
+  } catch (err) {
+    console.error("updateUser error:", err);
+    next(err);
   }
-
-  if (username) user.username = username;
-  if (email) user.email = email;
-
-  const updated = await user.save();
-  if (!updated) return next(new AppError("User not found", 404));
-  sendResponse(res, 200, updated)
 });
 
 // --- delete user profile ---
@@ -73,16 +79,16 @@ export const deleteUser = catchAsync(async (req, res, next) => {
   const {
     user: { id },
   } = req;
-  // delete all his post if user delete profile 
+  // delete all his post if user delete profile
   await Meme.destroy({ where: { user_id: id } });
   const deleted = await User.destroy({ where: { id } });
   if (!deleted) return next(new AppError("User not found", 404));
 
-  req.logout(err => {
+  req.logout((err) => {
     if (err) return next(err);
   });
-  
-  req.session.destroy(err => {
+
+  req.session.destroy((err) => {
     if (err) console.error("Session destroy error:", err);
   });
 
@@ -92,5 +98,5 @@ export const deleteUser = catchAsync(async (req, res, next) => {
     secure: process.env.NODE_ENV === "production",
   });
 
-  sendResponse(res, 200, { msg: "Account deleted successfully" })
+  sendResponse(res, 200, { msg: "Account deleted successfully" });
 });

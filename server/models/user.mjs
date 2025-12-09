@@ -25,7 +25,7 @@ User.init(
       },
     },
     password: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
       validate: {
         len: [8, 100],
@@ -39,12 +39,12 @@ User.init(
   },
   {
     hooks: {
-      beforeCreate: (user) => {
-        user.password = hashPassword(user.password);
+      beforeCreate: async (user) => {
+        user.password = await hashPassword(user.password);
       },
-      beforeUpdate: (user) => {
+      beforeUpdate: async (user) => {
         if(user.changed('password')) {
-          user.password = hashPassword(user.password);
+          user.password = await hashPassword(user.password);
         }
       },
     },
