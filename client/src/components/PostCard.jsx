@@ -14,10 +14,13 @@ import { useNavigate } from "react-router-dom";
 import Alert from "./Alert";
 import CommentsPopup from "./CommentsPopup";
 import "../styles/postCard.css";
+import { useAlert } from "../context/AlertContext";
+
 
 const DEFAULT_POST_IMAGE = "https://freesvg.org/img/Troll-Face.png";
 
 export default function PostCard({ post, onDelete }) {
+  const { showAlert, clearAlert } = useAlert();
   const [likesCount, setLikesCount] = useState(post.likesCount);
   const [commentsCount, setCommentsCount] = useState(post.commentsCount);
   const [showConfirmAlert, setShowConfirmAlert] = useState(false);
@@ -38,23 +41,27 @@ export default function PostCard({ post, onDelete }) {
   };
 
   const handleDeleteClick = () => {
+    showAlert("error", "Are you sure you want to delete this post?");
     setShowConfirmAlert(true);
   };
 
   const handleConfirmDelete = async () => {
     setShowConfirmAlert(false);
-    if (onDelete) await onDelete(post.id);
+    clearAlert();
+    if (onDelete) {
+    await onDelete(post.id);
+    showAlert("success", "Post deleted successfully!");
+  }
+  };
+  const handleCancelDelete = () => {
+    setShowConfirmAlert(false);
+    clearAlert();
   };
 
   return (
     <>
       {showConfirmAlert && (
-        <div className="post-confirm-container">
-          <Alert
-            type="error"
-            message="Are you sure you want to delete this post?"
-            onClose={() => setShowConfirmAlert(false)}
-          />
+       
           <div className="post-confirm-buttons">
             <button
               onClick={handleConfirmDelete}
@@ -63,13 +70,12 @@ export default function PostCard({ post, onDelete }) {
               Delete
             </button>
             <button
-              onClick={() => setShowConfirmAlert(false)}
+              onClick={handleCancelDelete}
               className="post-confirm-cancel-btn"
             >
               Cancel
             </button>
           </div>
-        </div>
       )}
 
       <div className="post">

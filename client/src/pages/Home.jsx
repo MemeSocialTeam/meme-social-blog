@@ -10,8 +10,9 @@ import "../styles/home.css";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import DotGrid from "../component/DotGrid";
-import ElectricBorder from "../component/ElectricBorder";
+// import ElectricBorder from "../component/ElectricBorder";
 import TextType from '../component/TextType';
+import { useAlert } from "../context/AlertContext";
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
@@ -19,7 +20,7 @@ export default function Home() {
   const [isExpanded, setIsExpanded] = useState(false);
   // const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState(null);
-  const [alert, setAlert] = useState(null);
+  // const [alert, setAlert] = useState(null);
   const { user } = useAuth();
   const [formData, setFormData] = useState({
     title: "",
@@ -30,6 +31,7 @@ export default function Home() {
   });
   const location = useLocation();
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
   const params = new URLSearchParams(location.search);
   const currentPage = parseInt(params.get("page")) || 1;
@@ -70,7 +72,7 @@ export default function Home() {
   const handleDeletePost = async (postId) => {
     try {
       await deletePost(postId);
-      setAlert({ type: "success", message: "Post deleted" });
+      showAlert("success", "Post deleted");
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/post?page=${currentPage}&limit=10`
       );
@@ -82,10 +84,7 @@ export default function Home() {
         setPosts(data.data);
       }
     } catch (err) {
-      setAlert({
-        type: "error",
-        message: err.message || "Failed to delete post",
-      });
+      showAlert("error", err.message || "Failed to delete post");
     }
   };
 
@@ -100,7 +99,7 @@ export default function Home() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user) {
-      setAlert({ type: "error", message: "Please login to create a post" });
+      showAlert("error", "Please login to create a post");
       return;
     }
 
@@ -133,7 +132,7 @@ export default function Home() {
       });
 
       setIsExpanded(false);
-      setAlert({ type: "success", message: "Post created successfully!" });
+      showAlert("success", "Post created successfully!");
 
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/post?page=${currentPage}&limit=10`
@@ -147,10 +146,7 @@ export default function Home() {
         setPosts(data.data);
       }
     } catch (err) {
-      setAlert({
-        type: "error",
-        message: err.message || "Failed to create post",
-      });
+      showAlert("error", err.message || "Failed to create post");
     } finally {
       setIsCreating(false);
     }
@@ -196,14 +192,14 @@ export default function Home() {
           zIndex: 1,
         }}
       >
-        {alert && (
+        {/* {alert && (
           <Alert
             type={alert.type}
             message={alert.message}
             onClose={() => setAlert(null)}
             fixed
           />
-        )}
+        )} */}
 
         <div className="create-post">
           <div

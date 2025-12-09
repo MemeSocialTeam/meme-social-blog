@@ -1,18 +1,12 @@
-.post-confirm-container {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1001;
-  max-width: 500px;
-  width: calc(100% - 40px);
-}
-
 .post-confirm-buttons {
   display: flex;
   gap: 10px;
   margin-top: 10px;
   justify-content: center;
+  position: fixed;
+  top: 17%;
+  left: 40%;
+  z-index: 3000;
 }
 
 .post-confirm-delete-btn,
@@ -54,4 +48,3 @@
 .post-delete-btn:hover {
   opacity: 0.8;
 }
-
