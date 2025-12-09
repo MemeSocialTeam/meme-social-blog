@@ -123,6 +123,13 @@ export const userPatch = {
     trim: true,
     stripLow: true,
   },
+   currentPsw: {
+    optional: true,
+    isString: { errorMessage: "Must be a string" },
+    notEmpty: { errorMessage: "Current password is required" },
+    trim: true,
+    stripLow: true,
+  },
 };
 
 export const postPatch = {
