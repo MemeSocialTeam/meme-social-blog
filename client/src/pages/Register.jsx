@@ -6,24 +6,26 @@ import "../styles/login.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { useAlert } from "../context/AlertContext";
 
 export default function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [alert, setAlert] = useState(null);
+  // const [alert, setAlert] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
   const { register } = useAuth();
+  const { showAlert } = useAlert();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setAlert({ type: "error", message: "Passwords do not match" });
+      showAlert("error", "Passwords do not match");
       return;
     }
 
@@ -31,20 +33,20 @@ export default function Register() {
       await register(username, email, password);
       navigate("/");
     } catch (err) {
-      setAlert({ type: "error", message: err.message });
+      showAlert("error", err.message);
     }
   };
 
   return (
     <div className="login-container">
-      {alert && (
+      {/* {alert && (
         <Alert
           type={alert.type}
           message={alert.message}
           onClose={() => setAlert(null)}
           fixed
         />
-      )}
+      )} */}
       <div className="login-box">
         <h1>Sign Up</h1>
 
@@ -78,7 +80,10 @@ export default function Register() {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <div className="toggle-password" onClick={() => setShowPassword((prev) => !prev)}>
+            <div
+              className="toggle-password"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
               <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
             </div>
           </div>
@@ -92,7 +97,10 @@ export default function Register() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
-            <div className="toggle-confirmed-password" onClick={() => setShowConfirmPassword((prev) => !prev)}>
+            <div
+              className="toggle-confirmed-password"
+              onClick={() => setShowConfirmPassword((prev) => !prev)}
+            >
               <FontAwesomeIcon
                 icon={showConfirmPassword ? faEyeSlash : faEye}
               />

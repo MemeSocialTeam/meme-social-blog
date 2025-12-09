@@ -6,16 +6,18 @@ import "../styles/login.css";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { useAlert } from "../context/AlertContext";
 
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [alert, setAlert] = useState(null);
+  // const [alert, setAlert] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
   const { login } = useAuth();
+    const { showAlert } = useAlert();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,20 +26,20 @@ export default function Login() {
       await login(email, password);
       navigate("/");
     } catch (err) {
-      setAlert({ type: "error", message: err.message });
+      showAlert("error", err.message);
     }
   };
 
   return (
     <div className="login-container">
-      {alert && (
+      {/* {alert && (
         <Alert
           type={alert.type}
           message={alert.message}
           onClose={() => setAlert(null)}
           fixed
         />
-      )}
+      )} */}
       <div className="login-box">
         <h1>Login</h1>
         <form onSubmit={handleSubmit}>
